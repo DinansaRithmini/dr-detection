@@ -1,0 +1,15 @@
+# Minimum versions the project was tested with.
+# After installing, run:  pip freeze > requirements-lock.txt   to record the exact versions.
+tensorflow>=2.16
+opencv-python>=4.8
+numpy>=1.26
+pandas>=2.1
+scikit-learn>=1.4
+matplotlib>=3.8
+seaborn>=0.13
+pillow>=10.0
+imagehash>=4.3
+tqdm>=4.66
+gradio>=4.0
+jupyter
+kaggle

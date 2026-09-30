@@ -1,0 +1,27 @@
+{
+  "exp_name": "quick_test",
+  "backbone": "efficientnetb0",
+  "img_size": 224,
+  "preprocess": "full",
+  "balance": "weights",
+  "batch_size": 32,
+  "dropout": 0.3,
+  "epochs_head": 1,
+  "epochs_finetune": 1,
+  "lr_head": 0.001,
+  "lr_finetune": 1e-05,
+  "unfreeze": 40,
+  "no_dedupe": false,
+  "seed": 42,
+  "quick": true,
+  "class_weights": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "pretrained_weights": "imagenet",
+  "started": "2026-09-29T15:02:41",
+  "train_minutes": 0.16
+}
