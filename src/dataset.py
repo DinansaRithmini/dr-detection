@@ -75,6 +75,7 @@ def find_duplicate_groups(hashes: np.ndarray,
     parent = np.arange(len(h))
 
     def find(i):
+        # union-find root lookup with path compression
         while parent[i] != i:
             parent[i] = parent[parent[i]]
             i = parent[i]
@@ -99,8 +100,8 @@ def remove_duplicates(df: pd.DataFrame) -> Tuple[pd.DataFrame, dict]:
     sizes = df.groupby("group")["id_code"].transform("size")
     n_labels = df.groupby("group")["stage"].transform("nunique")
 
-    conflicting = df[(sizes > 1) & (n_labels > 1)]
-    consistent = df[n_labels == 1].drop_duplicates("group", keep="first")
+    conflicting = df[(sizes > 1) & (n_labels > 1)]            # copies with disagreeing labels -> drop all
+    consistent = df[n_labels == 1].drop_duplicates("group", keep="first")   # same label -> keep one copy
 
     report = {
         "original_images": len(df),
@@ -163,6 +164,7 @@ def prepare_splits(force: bool = False, dedupe: bool = True,
         pd.Series(report).to_csv(config.SPLITS_DIR / "duplicate_report.csv", header=["value"])
         print("Duplicate report:", report)
 
+    # Two-step stratified split: carve off train, then divide the remainder into val and test
     train_df, temp_df = train_test_split(
         df, test_size=config.VAL_FRAC + config.TEST_FRAC,
         stratify=df["stage"], random_state=seed)
@@ -235,6 +237,7 @@ def make_dataset(df: pd.DataFrame, image_dir: Path, training: bool,
 
     ds = ds.map(_load, num_parallel_calls=tf.data.AUTOTUNE).batch(batch_size)
     if training:
+        # Augment per batch, after batching, so it runs vectorised on whole batches
         augmenter = build_augmenter(seed)
         ds = ds.map(lambda x, y: (augmenter(x, training=True), y),
                     num_parallel_calls=tf.data.AUTOTUNE)

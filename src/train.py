@@ -117,6 +117,7 @@ def main():
     print(f"\nStage 1 - trainable params: {model_lib.count_trainable(model):,}")
     h1 = model.fit(train_ds, validation_data=val_ds, epochs=args.epochs_head,
                    callbacks=make_callbacks(run_dir, "stage1"), verbose=2)
+    # Passed to stage 2's checkpoint so it only overwrites best.weights.h5 if it beats stage 1
     best_val = float(np.min(h1.history["val_loss"]))
 
     # ---- 4. Stage 2: fine-tune the top backbone layers -------------------

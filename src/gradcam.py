@@ -73,9 +73,11 @@ def save_gradcam_grid(model, backbone: str, df, image_dir: Path, out_path: Path,
         img = cv2.cvtColor(cv2.imread(str(Path(image_dir) / f"{r['id_code']}.png")), cv2.COLOR_BGR2RGB)
         heat, probs = gradcam_heatmap(grad_model, img)
         rows.append((img, heat, int(r["stage"]), int(probs.argmax()), float(probs.max())))
+    # rows: (image, heatmap, true stage, predicted stage, confidence)
     correct = [i for i, x in enumerate(rows) if x[2] == x[3]]
     wrong = [i for i, x in enumerate(rows) if x[2] != x[3]]
     picked = correct[: n // 2] + wrong[: n - n // 2]
+    # If one group (correct/wrong) ran short, fill the remaining slots with any other images
     picked += [i for i in range(len(rows)) if i not in picked][: n - len(picked)]
     chosen = [rows[i] for i in picked]
 

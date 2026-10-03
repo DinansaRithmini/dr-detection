@@ -590,6 +590,8 @@ button.primary:hover {
 footer { display: none !important; }
 """
 
+# Injected into <head>: reloads the page once with ?__theme=light so Gradio never
+# renders in dark mode (the custom CSS above is designed for a light background only).
 FORCE_LIGHT_HEAD = """
 <script>
 (function () {
@@ -625,8 +627,11 @@ EMPTY_ASSESSMENT_HTML = """
 
 
 def format_assessment_html(p_dr: float, stage_probs: np.ndarray) -> str:
+    """Build the result card HTML from the two model heads (binary DR probability + 5 stage probabilities)."""
     stage = int(stage_probs.argmax())
     stage_name = config.CLASS_NAMES[stage]
+    # The verdict (healthy / DR) follows the binary head; the stage shown is the stage head's argmax.
+    # The two heads can disagree on borderline images.
     is_dr = p_dr >= 0.5
 
     if not is_dr:
@@ -636,8 +641,10 @@ def format_assessment_html(p_dr: float, stage_probs: np.ndarray) -> str:
     else:
         chip_html = f'<span class="med-status-chip status-chip-warning"><span class="med-status-dot" style="background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,0.2);"></span> DR Detected &middot; Stage {stage} ({stage_name})</span>'
         desc_text = f"Pathological signs consistent with {stage_name} Diabetic Retinopathy detected. Specialist ophthalmic referral advised."
+        # Moderate stage (2) and above is treated as high risk
         risk_text = "High Risk" if stage >= 2 else "Moderate Risk"
 
+    # One progress-bar row per stage; the top-scoring stage is highlighted via CSS class
     rows_html = ""
     for i, name in enumerate(config.CLASS_NAMES):
         prob = float(stage_probs[i])
@@ -709,8 +716,10 @@ def build_interface(exp_name: str) -> gr.Blocks:
     grad_model = build_gradcam_model(model, cfg["backbone"])
 
     def analyse(image):
+        """Gradio callback: preprocess -> predict -> Grad-CAM -> render results."""
         if image is None:
             raise gr.Error("Please upload a retinal fundus image to analyse.")
+        # Use the same preprocessing variant and size the model was trained with
         processed = preprocess_image(np.asarray(image.convert("RGB")), cfg["preprocess"], cfg["img_size"])
         out = model.predict(processed[None].astype("float32"), verbose=0)
         stage_probs = out["stage"][0]
@@ -720,6 +729,7 @@ def build_interface(exp_name: str) -> gr.Blocks:
         assessment_html = format_assessment_html(p_dr, stage_probs)
         return processed, overlay_heatmap(processed, heat), assessment_html
 
+    # Clickable examples: one raw test-set image per DR stage (skipped if data isn't available locally)
     examples_dir = config.RAW_IMAGE_DIR
     examples = []
     split = config.SPLITS_DIR / "test.csv"

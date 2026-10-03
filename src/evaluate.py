@@ -136,6 +136,7 @@ def plot_misclassified(df: pd.DataFrame, y_true, y_pred, probs, image_dir: Path,
     wrong = np.where(y_true != y_pred)[0]
     if len(wrong) == 0:
         return
+    # Sort mistakes by the model's confidence in its (wrong) prediction, highest first
     wrong = wrong[np.argsort(-probs[wrong, y_pred[wrong]])][:n]
     cols = 4
     rows = int(np.ceil(len(wrong) / cols))
@@ -182,6 +183,7 @@ def evaluate_split(model, df: pd.DataFrame, image_dir: Path, run_dir: Path, spli
                    f"Normalised confusion matrix ({split})", True)
 
     def sens_spec(true, pred):
+        """Sensitivity (recall of DR) and specificity (recall of No DR) for binary labels."""
         tn, fp, fn, tp = confusion_matrix(true, pred, labels=[0, 1]).ravel()
         return tp / max(tp + fn, 1), tn / max(tn + fp, 1)
 

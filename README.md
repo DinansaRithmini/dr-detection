@@ -7,7 +7,7 @@ dataset. It predicts:
 - **DR stage:** 0 No DR, 1 Mild, 2 Moderate, 3 Severe, 4 Proliferative
 - **DR presence:** DR vs No DR, via a second output head
 
-Video demonstration: _add your hosted video URL here_
+Video demonstration: https://youtu.be/ZqBVPp6RCsQ
 
 ## Pipeline
 
