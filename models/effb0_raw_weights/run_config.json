@@ -1,0 +1,27 @@
+{
+  "exp_name": "effb0_raw_weights",
+  "backbone": "efficientnetb0",
+  "img_size": 224,
+  "preprocess": "raw",
+  "balance": "weights",
+  "batch_size": 32,
+  "dropout": 0.3,
+  "epochs_head": 10,
+  "epochs_finetune": 30,
+  "lr_head": 0.001,
+  "lr_finetune": 1e-05,
+  "unfreeze": 40,
+  "no_dedupe": false,
+  "seed": 42,
+  "quick": false,
+  "class_weights": [
+    0.40463870763778687,
+    2.007079601287842,
+    0.724600613117218,
+    4.014159202575684,
+    2.492307662963867
+  ],
+  "pretrained_weights": "imagenet",
+  "started": "2026-09-30T05:56:26",
+  "train_minutes": 7.5
+}

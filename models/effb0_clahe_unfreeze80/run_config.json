@@ -1,0 +1,27 @@
+{
+  "exp_name": "effb0_clahe_unfreeze80",
+  "backbone": "efficientnetb0",
+  "img_size": 224,
+  "preprocess": "clahe",
+  "balance": "weights",
+  "batch_size": 32,
+  "dropout": 0.3,
+  "epochs_head": 10,
+  "epochs_finetune": 30,
+  "lr_head": 0.001,
+  "lr_finetune": 1e-05,
+  "unfreeze": 80,
+  "no_dedupe": false,
+  "seed": 42,
+  "quick": false,
+  "class_weights": [
+    0.40463870763778687,
+    2.007079601287842,
+    0.724600613117218,
+    4.014159202575684,
+    2.492307662963867
+  ],
+  "pretrained_weights": "imagenet",
+  "started": "2026-10-03T10:55:29",
+  "train_minutes": 20.09
+}

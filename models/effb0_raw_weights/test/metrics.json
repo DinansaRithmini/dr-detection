@@ -1,0 +1,13 @@
+{
+  "accuracy": 0.7305,
+  "macro_f1": 0.6122,
+  "weighted_f1": 0.7447,
+  "qwk": 0.8181,
+  "stage_macro_auc": 0.9209,
+  "dr_accuracy": 0.9527,
+  "dr_sensitivity": 0.9633,
+  "dr_specificity": 0.9419,
+  "dr_auc": 0.9878,
+  "dr_from_stage_sensitivity": 0.9714,
+  "dr_from_stage_specificity": 0.9004
+}
